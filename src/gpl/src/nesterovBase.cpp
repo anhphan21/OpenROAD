@@ -2181,6 +2181,7 @@ void NesterovBase::updateNextIter(const int iter)
                  prevHpwl_,
                  group);
   }
+  std::cout << "HPWL: " << prevHpwl_ << std::endl;
 
   if (iter > 50 && minSumOverflow_ > sumOverflowUnscaled_) {
     minSumOverflow_ = sumOverflowUnscaled_;

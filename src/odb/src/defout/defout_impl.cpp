@@ -36,6 +36,7 @@
 #include <sys/stat.h>
 
 #include <cstdint>
+#include <iostream>
 #include <limits>
 #include <optional>
 #include <set>
@@ -249,6 +250,58 @@ bool defout_impl::writeBlock(dbBlock* block, const char* def_file)
   {
     delete _select_inst_map;
   }
+
+    // TODO:
+  dbSet<dbInst> insts = block->getInsts();
+  std::string _fileName = block->getName() + ".txt";
+  std::ofstream _outFile;
+  _outFile.open(_fileName);
+
+  if (!_outFile.is_open())
+    std::cout << "Cannot write out file !!!" << std::endl;
+
+  if ((x1 != 0) || (y1 != 0) || (x2 != 0) || (y2 != 0)) {
+    // fprintf(_out, "DIEAREA ( %d %d ) ( %d %d ) ;\n", x1, y1, x2, y2);
+    _outFile << x2 - x1 << " " << y2 - y1 << std::endl;
+  }
+  _outFile << std::endl;
+  _outFile << block->getName() << std::endl;
+
+  // _outFile << "COMPONENTS " << insts.size() << " ;\n";
+
+  // Sort the components for consistent output
+  for (dbInst* inst : sortedSet(insts)) {
+    if (_select_inst_map && !(*_select_inst_map)[inst]) {
+      continue;
+    }
+
+    dbMaster* master = inst->getMaster();
+    std::string mname = master->getName();
+
+    if (_use_net_inst_ids) {
+      if (_use_master_ids) {
+        _outFile << "    - I" << inst->getId() << " M" << master->getMasterId();
+      } else {
+        _outFile << "    - I" << inst->getId() << " " << mname.c_str();
+      }
+    } else {
+      std::string iname = inst->getName();
+      if (_use_master_ids) {
+        _outFile << "    - " << iname.c_str() << " M" << master->getMasterId();
+      } else {
+        // _outFile << "    - " << iname.c_str() << " "  << mname.c_str();
+        _outFile << iname.c_str();
+      }
+    }
+
+    int x, y;
+    inst->getLocation(x, y);
+    x = defdist(x);
+    y = defdist(y);
+    const char* orient = defOrient(inst->getOrient());
+    _outFile << " " << orient << " " << x << " " << y << std::endl;
+  }
+  _outFile.close();
   return true;
 }
 

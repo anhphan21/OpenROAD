@@ -1036,12 +1036,13 @@ void PlacerBase::init()
   // siteSize update
   siteSizeX_ = pbCommon_->siteSizeX();
   siteSizeY_ = pbCommon_->siteSizeY();
-
+  std::cout << "\nCell num in pbCommon: " << pbCommon_->insts().size() << "\n";
   for (auto& inst : pbCommon_->insts()) {
     if (!inst->isInstance()) {
       continue;
     }
-
+    std::cout << "Adding cell address: " << inst->dbInst() << "\n";
+    //TODO:
     if (inst->dbInst() && inst->dbInst()->getGroup() != group_) {
       continue;
     }
@@ -1073,6 +1074,7 @@ void PlacerBase::init()
     }
 
     insts_.push_back(inst);
+    std::cout << "add instance to placement dtb: " << inst->dbInst()->getName() << "\tgroup: "<< inst->dbInst()->getGroup()->getName() << "\n";
   }
 
   // insts fill with fake instances (fragmented row or blockage)
