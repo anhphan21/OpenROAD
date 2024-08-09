@@ -182,7 +182,7 @@ class Painter
 
   // Draw an octagon shape as a polygon with coordinates in DBU with the
   // current pen/brush
-  virtual void drawOctagon(const odb::Oct& oct) = 0;
+  virtual void drawOctagn(const odb::Oct& oct) = 0;
 
   // Draw a rect with coordinates in DBU with the current pen/brush; draws a
   // round rect if roundX > 0 or roundY > 0

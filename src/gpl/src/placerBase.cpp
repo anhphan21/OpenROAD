@@ -509,14 +509,18 @@ void Pin::updateCoordi(odb::dbBTerm* bTerm)
   int ly = INT_MAX;
   int ux = INT_MIN;
   int uy = INT_MIN;
-
+  // TODO: AP modify
   for (dbBPin* bPin : bTerm->getBPins()) {
     Rect bbox = bPin->getBBox();
+    // std::cout << bbox.xMin() << "\t" << bbox.xMax() << "\t" << bbox.yMin() <<
+    // "\t" << bbox.yMax() << "\n";
     lx = std::min(bbox.xMin(), lx);
     ly = std::min(bbox.yMin(), ly);
     ux = std::max(bbox.xMax(), ux);
     uy = std::max(bbox.yMax(), uy);
   }
+
+  std::cout << bTerm->getBPins().size() << "\t" << lx << "\t" << ux << "\t" << ly << "\t" << uy << "\n";
 
   if (lx == INT_MAX || ly == INT_MAX || ux == INT_MIN || uy == INT_MIN) {
     std::string msg = std::string(bTerm->getConstName())
@@ -1038,14 +1042,18 @@ void PlacerBase::init()
   siteSizeY_ = pbCommon_->siteSizeY();
   std::cout << "\nCell num in pbCommon: " << pbCommon_->insts().size() << "\n";
   for (auto& inst : pbCommon_->insts()) {
+    // TODO:
+    // std::cout << inst->isInstance() << "\t" << inst->dbInst() << "\t"
+    //           << inst->dbInst()->getName() << "\t"
+    //           << inst->dbInst()->getGroup()->getName() << "\n";
+
     if (!inst->isInstance()) {
       continue;
     }
-    std::cout << "Adding cell address: " << inst->dbInst() << "\n";
-    //TODO:
-    if (inst->dbInst() && inst->dbInst()->getGroup() != group_) {
-      continue;
-    }
+    // TODO: AP modify
+    //  if (inst->dbInst() && inst->dbInst()->getGroup() != group_) {
+    //    continue;
+    //  }
 
     if (inst->isFixed()) {
       // Check whether fixed instance is
@@ -1074,7 +1082,11 @@ void PlacerBase::init()
     }
 
     insts_.push_back(inst);
-    std::cout << "add instance to placement dtb: " << inst->dbInst()->getName() << "\tgroup: "<< inst->dbInst()->getGroup()->getName() << "\n";
+    // std::cout << "add instance to placement dtb: " <<
+    // inst->dbInst()->getName()
+    //           << "\tgroup: " << inst->dbInst()->getGroup()->getName() <<
+    //           "\n";
+    // END MODIFY
   }
 
   // insts fill with fake instances (fragmented row or blockage)

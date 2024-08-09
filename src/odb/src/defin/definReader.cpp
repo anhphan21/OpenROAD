@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <iostream>
 #include <string>
 
 #include "definBlockage.h"
@@ -1015,6 +1016,9 @@ int definReader::pinCallback(defrCallbackType_e /* unused: type */,
 
   // Add all ports associated with the pin above
   if (pin->hasPort()) {
+    // TODO: AP modify
+    // std::cout << "Create port for pin: " << pin->pinName() << "\t"
+    //           << pin->numPorts() << "\n";
     // 5.7 .. Multiple ports each with multiple boxes/shapes
     for (int i = 0; i < pin->numPorts(); ++i) {
       defiPinPort* port = pin->pinPort(i);
@@ -1036,6 +1040,7 @@ int definReader::pinCallback(defrCallbackType_e /* unused: type */,
             = odb::definReader::translate_orientation(port->orient());
         pinR->pinPlacement(
             type, port->placementX(), port->placementY(), orient);
+        // std::cout << "Port is place at: " << type << "\t" << port->placementX() << "\t" << port->placementY() << "\t" << orient << "\n";
       }
 
       // For a given port, add all boxes/shapes belonging to that port

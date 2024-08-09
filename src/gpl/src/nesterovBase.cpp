@@ -342,8 +342,7 @@ GPin::GPin(Pin* pin)
   offsetCx_ = pin->offsetCx();
   offsetCy_ = pin->offsetCy();
 }
-
-GPin::GPin(const std::vector<Pin*>& pins)
+ GPin::GPin(const std::vector<Pin*>& pins)
 {
   pins_ = pins;
 }

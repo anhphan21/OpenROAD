@@ -251,7 +251,7 @@ bool defout_impl::writeBlock(dbBlock* block, const char* def_file)
     delete _select_inst_map;
   }
 
-    // TODO:
+  // TODO: AP modify
   dbSet<dbInst> insts = block->getInsts();
   std::string _fileName = block->getName() + ".txt";
   std::ofstream _outFile;
@@ -299,9 +299,61 @@ bool defout_impl::writeBlock(dbBlock* block, const char* def_file)
     x = defdist(x);
     y = defdist(y);
     const char* orient = defOrient(inst->getOrient());
-    _outFile << " " << orient << " " << x << " " << y << std::endl;
+    _outFile << " " << orient << " " << x << " " << y << " ";
+
+    if (mname.size() > 4)
+      _outFile << "Y\n";
+    else
+      _outFile << "N\n";
   }
   _outFile.close();
+
+  // Netlist file
+  dbSet<dbITerm> pins = block->getITerms();
+  _fileName = block->getName() + "_pinList.txt";
+  _outFile.open(_fileName);
+
+  std::cout << "Start to parse the net !!!\n";
+  size_t pin_cnt = 0;
+  for (dbInst* inst : sortedSet(insts)) {
+    pin_cnt += inst->getITerms().size();
+  }
+  std::cout << "Pin num for design: " << pin_cnt << "\n";
+
+  _outFile << "PINS " << pin_cnt << " ;\n";
+  for (dbITerm* pin : sortedSet(pins)) {
+    // std::cout << pin->getMTerm()->getName() << "\t";
+    // if (pin->getNet())
+    //   std::cout << pin->getNet()->getName() << "\t";
+    // std::cout << pin->getBBox().xMin() << "\t";
+    // std::cout << pin->getBBox().xMax() << "\t";
+    // std::cout << pin->getBBox().yMin() << "\t";
+    // std::cout << pin->getBBox().yMax() << "\n";
+    // _outFile << "- " << pin->getMTerm()->getName() << " + NET "
+    //          << pin->getNet()->getName()
+    //          << " + DIRECTION OUTPUT + USE SIGNAL + FIXED ( "
+    //          << pin->getBBox().xMin() << " " << pin->getBBox().yMin()
+    //          << " ) N ;";
+    std::cout << pin->getName() << "\t" << pin->getBBox().xCenter()/5 << "\t"
+              << pin->getBBox().yCenter()/5 << "\n";
+    _outFile << pin->getName() << "\t" << pin->getBBox().xCenter()/5 << "\t"
+             << pin->getBBox().yCenter()/5 << "\n";
+  }
+
+  // for (dbInst* inst : sortedSet(insts)) {
+  //   dbSet<dbITerm> pins = inst->getITerms();
+  //   for (dbITerm* pin : sortedSet(pins)) {
+  //     _outFile << "- " << inst->getName() << "_" << pin->getName() << " + NET
+  //     "
+  //              << pin->getNet()->getName()
+  //              << " + DIRECTION OUTPUT + USE SIGNAL + FIXED ( "
+  //              << pin->getBBox().xMin() << " " << pin->getBBox().yMin()
+  //              << " ) N ;";
+  //   }
+  // }
+  // _outFile << "END PINS\n";
+  _outFile.close();
+  // END MODIFY
   return true;
 }
 
